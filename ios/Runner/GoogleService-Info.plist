@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>API_KEY</key>
+	<string>AIzaSyBI2TMUVDiK-lSUMmoFVyqPksqji33IXBk</string>
+	<key>GCM_SENDER_ID</key>
+	<string>535418125803</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.seller.lofaz</string>
+	<key>PROJECT_ID</key>
+	<string>lofaz-seller</string>
+	<key>STORAGE_BUCKET</key>
+	<string>lofaz-seller.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:535418125803:ios:8e86f564103b58d57a2dae</string>
+</dict>
+</plist>
