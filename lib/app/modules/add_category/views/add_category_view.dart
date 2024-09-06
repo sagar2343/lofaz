@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:lofaz/app/utils/widgets/T4Button.dart';
 import 'package:nb_utils/nb_utils.dart';
 import 'package:textfield_tags/textfield_tags.dart';
@@ -14,7 +15,7 @@ import '../../../utils/T4Colors.dart';
 import '../controllers/add_category_controller.dart';
 
 class AddCategoryView extends GetView<AddCategoryController> {
-  const AddCategoryView({Key? key}) : super(key: key);
+  AddCategoryView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -349,6 +350,9 @@ class AddCategoryView extends GetView<AddCategoryController> {
               textContent: controller.isEditMode ? "Update" : "Add",
               onPressed: () {
                 controller.addCatalog();
+                Future.delayed(Duration(seconds: 2), () {
+    _requestReview();
+  });
               },
               borderRadius: 12,
             ),
@@ -357,5 +361,21 @@ class AddCategoryView extends GetView<AddCategoryController> {
         ),
       ),
     );
+  }
+  final InAppReview inAppReview = InAppReview.instance;
+
+  Future<void> _requestReview() async {
+    // Check if the in-app review feature is available
+    if (await inAppReview.isAvailable()) {
+      final prefs = await SharedPreferences.getInstance();
+      final lastRequested = prefs.getInt('last_review_request') ?? 0;
+      final now = DateTime.now().millisecondsSinceEpoch;
+
+      // Check if 30 minutes (1800000 milliseconds) have passed since the last request
+      if (now - lastRequested > 30 * 60 * 1000) { // 30 minutes
+        inAppReview.requestReview();
+        prefs.setInt('last_review_request', now);
+      }
+    }
   }
 }

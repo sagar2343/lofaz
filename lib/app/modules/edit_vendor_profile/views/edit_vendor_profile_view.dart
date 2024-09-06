@@ -3,18 +3,20 @@ import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:lofaz/app/data/models/shop_category/shop_category.dart';
 import 'package:lofaz/app/utils/T4Colors.dart';
 import 'package:lofaz/app/utils/widgets/t3_app_button.dart';
 import 'package:multi_select_flutter/bottom_sheet/multi_select_bottom_sheet_field.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:quill_html_editor/quill_html_editor.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
 import '../controllers/edit_vendor_profile_controller.dart';
 
 class EditVendorProfileView extends GetView<EditVendorProfileController> {
-  const EditVendorProfileView({Key? key}) : super(key: key);
+  EditVendorProfileView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -378,9 +380,28 @@ class EditVendorProfileView extends GetView<EditVendorProfileController> {
               textContent: "Update Profile",
               onPressed: () {
                 controller.updateProfile();
+                Future.delayed(Duration(seconds: 2), () {
+    _requestReview();
+  });
               })
         ],
       ),
     );
+  }
+  final InAppReview inAppReview = InAppReview.instance;
+
+  Future<void> _requestReview() async {
+    // Check if the in-app review feature is available
+    if (await inAppReview.isAvailable()) {
+      final prefs = await SharedPreferences.getInstance();
+      final lastRequested = prefs.getInt('last_review_request') ?? 0;
+      final now = DateTime.now().millisecondsSinceEpoch;
+
+      // Check if 30 minutes (1800000 milliseconds) have passed since the last request
+      if (now - lastRequested > 30 * 60 * 1000) { // 30 minutes
+        inAppReview.requestReview();
+        prefs.setInt('last_review_request', now);
+      }
+    }
   }
 }

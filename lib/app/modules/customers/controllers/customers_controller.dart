@@ -50,6 +50,7 @@ class CustomersController extends GetxController {
       value.fold((l) {
         ScaffoldMessenger.maybeOf(Get.context!)?.showSnackBar(
           SnackBar(
+            duration: const Duration(seconds: 1),
             content: Text(l.errorMessage),
             backgroundColor: Colors.red,
           ),

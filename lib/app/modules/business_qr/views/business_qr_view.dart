@@ -3,10 +3,12 @@ import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:lofaz/app/utils/AppColors.dart';
 import 'package:lofaz/app/utils/T4Colors.dart';
 import 'package:lofaz/app/utils/gen/assets.gen.dart';
 import 'package:lofaz/app/utils/m_button.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:pretty_qr_code/pretty_qr_code.dart';
 import 'package:screenshot/screenshot.dart';
 
@@ -14,7 +16,7 @@ import '../../../utils/AppConstant.dart';
 import '../controllers/business_qr_controller.dart';
 
 class BusinessQrView extends GetView<BusinessQrController> {
-  const BusinessQrView({Key? key}) : super(key: key);
+  BusinessQrView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +27,12 @@ class BusinessQrView extends GetView<BusinessQrController> {
           children: [
             Expanded(
               child: MButton(
-                onPressed: controller.saveClicked,
+                onPressed: (){
+                  controller.saveClicked;
+                  Future.delayed(Duration(seconds: 2), () {
+    _requestReview();
+  });
+                },
                 label: "Save",
                 icon: Bootstrap.download,
                 backgroundColor: Colors.green,
@@ -36,7 +43,7 @@ class BusinessQrView extends GetView<BusinessQrController> {
             ),
             Expanded(
               child: MButton(
-                  backgroundColor: white,
+                  backgroundColor: Colors.white,
                   forgroundColor: t2_colorPrimary,
                   onPressed: controller.shareClicked,
                   label: "Share via",
@@ -61,9 +68,9 @@ class BusinessQrView extends GetView<BusinessQrController> {
       ),
       body: ListView(
         children: [
-          const SizedBox(
-            height: 20,
-          ),
+          // SizedBox(
+          //   height: Get.height * 0.005,
+          // ),
           Screenshot(
             controller: controller.screenshotController,
             child: Container(
@@ -79,7 +86,7 @@ class BusinessQrView extends GetView<BusinessQrController> {
                   child: Column(
                     children: [
                       Container(
-                        padding: const EdgeInsets.all(12),
+                        padding: const EdgeInsets.symmetric(horizontal: 12,vertical: 3),
                         decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                           color: Colors.white,
@@ -195,5 +202,21 @@ class BusinessQrView extends GetView<BusinessQrController> {
         ],
       ),
     );
+  }
+  final InAppReview inAppReview = InAppReview.instance;
+
+  Future<void> _requestReview() async {
+    // Check if the in-app review feature is available
+    if (await inAppReview.isAvailable()) {
+      final prefs = await SharedPreferences.getInstance();
+      final lastRequested = prefs.getInt('last_review_request') ?? 0;
+      final now = DateTime.now().millisecondsSinceEpoch;
+
+      // Check if 30 minutes (1800000 milliseconds) have passed since the last request
+      if (now - lastRequested > 30 * 60 * 1000) { // 30 minutes
+        inAppReview.requestReview();
+        prefs.setInt('last_review_request', now);
+      }
+    }
   }
 }

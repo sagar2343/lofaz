@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:lofaz/app/data/models/social_links/social_links.dart';
 import 'package:lofaz/app/routes/app_pages.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -10,7 +11,7 @@ import '../../../data/models/shipping_charges/shipping_charge.dart';
 import '../controllers/business_settings_controller.dart';
 
 class BusinessSettingsView extends GetView<BusinessSettingsController> {
-  const BusinessSettingsView({Key? key}) : super(key: key);
+  BusinessSettingsView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,6 +35,9 @@ class BusinessSettingsView extends GetView<BusinessSettingsController> {
                 value: controller.storeSettings.value?.orderStatus ?? false,
                 onChanged: (v) {
                   controller.changeOnlineOrderStatus(v);
+                  Future.delayed(Duration(seconds: 2), () {
+    _requestReview();
+  });
                 },
               ),
             );
@@ -49,6 +53,9 @@ class BusinessSettingsView extends GetView<BusinessSettingsController> {
                 value: controller.storeSettings.value?.whatsappStatus ?? false,
                 onChanged: (v) {
                   controller.changeShowWhatsappNmuber(v);
+                  Future.delayed(Duration(seconds: 2), () {
+    _requestReview();
+  });
                 },
               ),
             );
@@ -65,7 +72,11 @@ class BusinessSettingsView extends GetView<BusinessSettingsController> {
                 if (value is ShippingCharge) {
                   controller.shippingCharges.value = value;
                 }
-              });
+              }
+              );
+              Future.delayed(Duration(seconds: 2), () {
+    _requestReview();
+  });
             },
             leading: const Icon(Bootstrap.truck),
             title: const Text("Shipping charges"),
@@ -86,6 +97,9 @@ class BusinessSettingsView extends GetView<BusinessSettingsController> {
                   controller.socialLinks.value = value;
                 }
               });
+              Future.delayed(Duration(seconds: 2), () {
+    _requestReview();
+  });
             },
             leading: const Icon(Bootstrap.share),
             title: const Text("Social media links"),
@@ -104,5 +118,21 @@ class BusinessSettingsView extends GetView<BusinessSettingsController> {
         ],
       ),
     );
+  }
+  final InAppReview inAppReview = InAppReview.instance;
+
+  Future<void> _requestReview() async {
+    // Check if the in-app review feature is available
+    if (await inAppReview.isAvailable()) {
+      final prefs = await SharedPreferences.getInstance();
+      final lastRequested = prefs.getInt('last_review_request') ?? 0;
+      final now = DateTime.now().millisecondsSinceEpoch;
+
+      // Check if 30 minutes (1800000 milliseconds) have passed since the last request
+      if (now - lastRequested > 30 * 60 * 1000) { // 30 minutes
+        inAppReview.requestReview();
+        prefs.setInt('last_review_request', now);
+      }
+    }
   }
 }

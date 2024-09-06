@@ -41,7 +41,7 @@ class CustomAlert extends StatelessWidget {
             children: [
               Expanded(
                 child: MButton(
-                  backgroundColor: Colors.red,
+                  backgroundColor: Colors.blue.shade500,
                   forgroundColor: Colors.white,
                   onPressed: () {
                     Get.back(

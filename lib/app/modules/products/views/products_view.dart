@@ -101,18 +101,17 @@ class ProductsView extends GetView<ProductsController> {
                           actions: [
                             IconButton(
                                 onPressed: () {
-                                  if (DefaultTabController.of(context).index ==
-                                      0) {
+                                  if (DefaultTabController.of(context).index == 0) {
                                     showModalBottomSheet(
                                         context: context,
                                         builder: (context) {
-                                          return const ProductFilterBottomSheet();
+                                          return ProductFilterBottomSheet();
                                         });
                                   } else {
                                     showModalBottomSheet(
                                         context: context,
                                         builder: (context) {
-                                          return const CatalogFilterBottomsheet();
+                                          return CatalogFilterBottomsheet();
                                         });
                                   }
                                 },
@@ -299,7 +298,7 @@ class ProductListPage extends StatelessWidget {
                 Expanded(
                   child: ListView.builder(
                     padding:
-                        const EdgeInsets.only(left: 15, right: 15, bottom: 60),
+                        const EdgeInsets.only(left: 15, right: 15, bottom: 60, top: 10),
                     itemCount: products.length,
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
@@ -364,11 +363,11 @@ class ProductCard extends StatelessWidget {
 
   deleteProductClicked() async {
     final result = await Get.dialog<bool>(CustomAlert(
-      message:
-          "Are you sure you want to delete this product?\nProduct: ${product.title}",
-      buttonColor: Colors.blue,
+      message: "Are you sure you want to delete this product?\nProduct: ${product.title}",
+      buttonColor: Colors.red,
       buttonText: "YES,DELETE",
       icon: Bootstrap.trash,
+
     ));
     if (result != null) {
       if (result) {

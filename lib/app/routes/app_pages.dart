@@ -99,12 +99,12 @@ class AppPages {
                     children: [
                       GetPage(
                         name: _Paths.ADD_CATEGORY,
-                        page: () => const AddCategoryView(),
+                        page: () => AddCategoryView(),
                         binding: AddCategoryBinding(),
                       ),
                       GetPage(
                         name: _Paths.ADD_PRODUCT,
-                        page: () => const AddProductView(),
+                        page: () => AddProductView(),
                         binding: AddProductBinding(),
                       ),
                     ]),
@@ -115,12 +115,12 @@ class AppPages {
                     children: [
                       GetPage(
                         name: _Paths.EDIT_VENDOR_PROFILE,
-                        page: () => const EditVendorProfileView(),
+                        page: () => EditVendorProfileView(),
                         binding: EditVendorProfileBinding(),
                       ),
                       GetPage(
                           name: _Paths.BUSINESS_SETTINGS,
-                          page: () => const BusinessSettingsView(),
+                          page: () => BusinessSettingsView(),
                           binding: BusinessSettingsBinding(),
                           children: [
                             GetPage(
@@ -147,7 +147,7 @@ class AppPages {
                     ]),
                 GetPage(
                     name: _Paths.MANAGE,
-                    page: () => const ManageView(),
+                    page: () => ManageView(),
                     binding: ManageBinding(),
                     children: [
                       GetPage(
@@ -157,7 +157,7 @@ class AppPages {
                       ),
                       GetPage(
                         name: _Paths.BUSINESS_QR,
-                        page: () => const BusinessQrView(),
+                        page: () => BusinessQrView(),
                         binding: BusinessQrBinding(),
                       ),
                     ]),

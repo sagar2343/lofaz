@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:quill_html_editor/quill_html_editor.dart';
 
 import '../../../utils/m_button.dart';
 
@@ -19,21 +19,52 @@ class ContentInputDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Create a controller for the QuillHtmlEditor
+    // final htmlEditorController = QuillHtmlEditorController();
+    final QuillEditorController htmlEditorController = QuillEditorController();
+
     return AlertDialog(
       title: Text(title),
-      content: TextFormField(
-        initialValue: content.value,
-        inputFormatters: [
-          FilteringTextInputFormatter.allow(RegExp("[A-Za-z0-9- ]")),
-        ],
-        onChanged: (value) {
-          content.value = value;
-        },
-        decoration: const InputDecoration(
-          hintText: "Enter your privacy policy",
-          border: InputBorder.none,
+      content: SizedBox(
+        height: 250, // Adjust height as needed
+        child: Column(
+          children: [
+            // Toolbar for rich text editing
+            ToolBar(
+              toolBarColor: Colors.cyan.shade50,
+              activeIconColor: Colors.green,
+              padding: const EdgeInsets.all(8),
+              iconSize: 20,
+              controller: htmlEditorController,
+              toolBarConfig: const [
+                ToolBarStyle.bold,
+                ToolBarStyle.italic,
+                ToolBarStyle.underline,
+                ToolBarStyle.headerOne,
+                ToolBarStyle.headerTwo,
+                ToolBarStyle.undo,
+                ToolBarStyle.redo,
+                ToolBarStyle.image,
+                ToolBarStyle.blockQuote,
+              ],
+            ),
+            Expanded(
+              child: QuillHtmlEditor(
+                text: content.value,
+                hintText: 'Write something here',
+                controller: htmlEditorController,
+                isEnabled: true,
+                minHeight: 300,
+                hintTextStyle: const TextStyle(
+                  color: Colors.grey,
+                ),
+                onTextChanged: (text) {
+                  content.value = text;
+                },
+              ),
+            ),
+          ],
         ),
-        maxLines: 8,
       ),
       actions: [
         MButton(

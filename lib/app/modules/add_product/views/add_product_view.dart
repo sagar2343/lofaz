@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 
 import 'package:get/get.dart';
 import 'package:icons_plus/icons_plus.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:lofaz/app/data/models/catalog/catalog.dart';
 import 'package:lofaz/app/data/models/product/product_unit.dart';
 import 'package:lofaz/app/routes/app_pages.dart';
@@ -18,7 +19,7 @@ import '../../../utils/T4Colors.dart';
 import '../controllers/add_product_controller.dart';
 
 class AddProductView extends GetView<AddProductController> {
-  const AddProductView({Key? key}) : super(key: key);
+  AddProductView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -588,6 +589,9 @@ class AddProductView extends GetView<AddProductController> {
                         : "Add Product",
                     onPressed: () {
                       controller.addProduct();
+                      Future.delayed(Duration(seconds: 2), () {
+    _requestReview();
+  });
                     }),
               ),
               120.height,
@@ -596,5 +600,21 @@ class AddProductView extends GetView<AddProductController> {
         ),
       ),
     );
+  }
+  final InAppReview inAppReview = InAppReview.instance;
+
+  Future<void> _requestReview() async {
+    // Check if the in-app review feature is available
+    if (await inAppReview.isAvailable()) {
+      final prefs = await SharedPreferences.getInstance();
+      final lastRequested = prefs.getInt('last_review_request') ?? 0;
+      final now = DateTime.now().millisecondsSinceEpoch;
+
+      // Check if 30 minutes (1800000 milliseconds) have passed since the last request
+      if (now - lastRequested > 30 * 60 * 1000) { // 30 minutes
+        inAppReview.requestReview();
+        prefs.setInt('last_review_request', now);
+      }
+    }
   }
 }

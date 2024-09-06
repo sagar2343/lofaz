@@ -57,8 +57,7 @@ class VendorServices extends GetxService {
 
   Future<Vendor?> fetchCurrentProfile() async {
     try {
-      final res = await client.get(
-          "/api/vendor/check_number/${_authServices.getCurrentUser!.phoneNumber!}");
+      final res = await client.get("/api/vendor/check_number/${_authServices.getCurrentUser!.phoneNumber!}");
 
       if (res.statusCode == 201 && res.data['data'] != null) {
         final vendor = Vendor.fromJson(res.data['data']);
